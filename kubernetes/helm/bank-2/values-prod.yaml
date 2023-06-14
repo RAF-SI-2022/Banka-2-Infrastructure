@@ -1,5 +1,6 @@
 namespace: banka-2-prod
 domain: banka-2.k8s.elab.rs
+env: prod
 mongodb:
   service: mongodb-mongodb-sharded
   username: admin
