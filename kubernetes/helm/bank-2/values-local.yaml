@@ -1,5 +1,6 @@
 namespace: banka-2-dev
 domain: banka-2-dev
+env: dev
 mongodb:
   service: mongodb-mongodb-sharded
   username: admin
