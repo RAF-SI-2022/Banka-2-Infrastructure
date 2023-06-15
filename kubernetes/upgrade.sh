@@ -8,6 +8,27 @@
 #                                                                              #
 ################################################################################
 
+##########################################################################
+# Environment/namespace vars, should be predefined before running script #
+##########################################################################
+
+if [[ -z "${ENV}" ]]; then
+  echo "ENV not declared"
+  exit 1
+fi
+if [[ -z "${SIDE}" ]]; then
+  echo "SIDE not declared"
+  exit 1
+fi
+if [[ -z "${NAMESPACE}" ]]; then
+  echo "NAMESPACE not declared"
+  exit 1
+fi
+if [[ -z "${SERVICES}" ]]; then
+  echo "SERVICES not declared"
+  exit 1
+fi
+
 chmod +x kubernetes/scripts/vars.sh
 chmod +x kubernetes/scripts/build.sh
 chmod +x kubernetes/scripts/deploy.sh
