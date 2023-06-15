@@ -71,6 +71,6 @@ spec:
             path: "/backend/client(/|$)(.*)"
             backend:
               service:
-                name: otc
+                name: client
                 port:
                   number: 8083
