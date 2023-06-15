@@ -51,12 +51,12 @@ spec:
               value: "6379"
             - name: spring.cache.redis.time-to-live
               value: "900000"
-            - name: service.users.host
+            - name: services.users.host
               value: users:8080
-            - name: service.users.otc
-              value: users:8082
-            - name: service.users.client
-              value: users:8083
+            - name: services.otc.host
+              value: otc:8082
+            - name: services.client.host
+              value: client:8083
           ports:
             - containerPort: 8081
           command: ["java", "-jar", "app.jar"]
