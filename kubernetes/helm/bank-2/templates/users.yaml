@@ -94,7 +94,7 @@ spec:
                   key: password
             - name: schemas
               value: backend
-          command: ["/bin/sh", "-c"]
+          command: ["/bin/bash", "-c"]
           # TODO remove hardcoded user/admin combo
           args: ["export res=\"NA\"; while ! [[ \"$res\" == *\"BASELINE\"* ]]; do echo Waiting on Flyway base migration; sleep 30; res=$(flyway -user=admin -password=raf-si -url=jdbc:mysql://relational:3306/backend info); done; until flyway migrate -url=$url -user=$user -password=$password; do echo Waiting for Flyway migration; sleep 60; done"]
 
