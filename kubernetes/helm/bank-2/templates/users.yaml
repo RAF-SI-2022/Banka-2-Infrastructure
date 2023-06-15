@@ -45,6 +45,10 @@ spec:
               value: redis
             - name: spring.data.redis.port
               value: "6379"
+            - name: cache.host
+              value: redis
+            - name: cache.port
+              value: "6379"
             - name: spring.cache.redis.time-to-live
               value: "900000"
             - name: service.frontend.host
