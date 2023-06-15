@@ -74,11 +74,17 @@ spec:
           command: ["/bin/sh", "-c"]
           args: ["until mongosh \"mongodb://{{ .Values.mongodb.username }}:{{ .Values.mongodb.password }}@{{ .Values.mongodb.service }}:27017/backend?authSource=admin\" --eval \"db.stats()\" > /dev/null 2>&1; do echo Waiting for MongoDB database; sleep 60; done"]
 
-        # Check that MongoDB is running
+        # Check that Redis is running
         - name: assert-redis
           image: redis:7.0.11-alpine
           command: ["/bin/sh", "-c"]
           args: ["until echo PING | redis-cli -h redis -p 6379 > /dev/null 2>&1; do echo Waiting for Redis cache; sleep 60; done"]
+
+        # Check that Users is running
+        - name: assert-users
+          image: curlimages/curl:8.1.2
+          command: ["/bin/sh", "-c"]
+          args: ["until curl users:8080; do echo Waiting for Users service; sleep 60; done"]
 
         # Migrate schema to "{{ .Values.backend.imageVer }}" version
         - name: flyway
@@ -99,7 +105,7 @@ spec:
             - name: schemas
               value: backend
           command: ["/bin/sh", "-c"]
-          args: ["until flyway migrate -url=$url -user=$user -password=$password; do echo Waiting for Flyway migration; sleep 60; done"]
+          args: ["export res=\"#NA#\"; while ! [[ \"$res\" == \"*#MIGRATED#*\" ]]; do echo Waiting on Flyway base migration; sleep 30; res=$(mysql -sN -hrelational -P3306 -Dbackend -uadmin -praf-si --execute=\"select IF(count(*) > 1, '#MIGRATED#', '#NA#') as Result from flyway_schema_history;\" || \"#NA#\"); done; until flyway migrate -url=$url -user=$user -password=$password; do echo Waiting for Flyway migration; sleep 60; done"]
 
 ---
 
