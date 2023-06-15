@@ -95,7 +95,8 @@ spec:
             - name: schemas
               value: backend
           command: ["/bin/sh", "-c"]
-          args: ["export res=\"#NA#\"; while ! [[ \"$res\" == \"*#MIGRATED#*\" ]]; do echo Waiting on Flyway base migration; sleep 30; res=$(mysql -sN -hrelational -P3306 -Dbackend -uadmin -praf-si --execute=\"select IF(count(*) > 1, '#MIGRATED#', '#NA#') as Result from flyway_schema_history;\" || \"#NA#\"); done; until flyway migrate -url=$url -user=$user -password=$password; do echo Waiting for Flyway migration; sleep 60; done"]
+          # TODO remove hardcoded user/admin combo
+          args: ["export res=\"NA\"; while ! [[ \"$res\" == *\"BASELINE\"* ]]; do echo Waiting on Flyway base migration; sleep 30; res=$(flyway -user=admin -password=raf-si -url=jdbc:mysql://relational:3306/backend info); done; until flyway migrate -url=$url -user=$user -password=$password; do echo Waiting for Flyway migration; sleep 60; done"]
 
 ---
 
