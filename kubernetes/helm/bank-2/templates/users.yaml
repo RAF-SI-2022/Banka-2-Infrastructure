@@ -45,9 +45,13 @@ spec:
               value: redis
             - name: spring.data.redis.port
               value: "6379"
+            - name: cache.host
+              value: redis
+            - name: cache.port
+              value: "6379"
             - name: spring.cache.redis.time-to-live
               value: "900000"
-            - name: service.frontend.host
+            - name: services.frontend.host
               value: TODO_add_value
           ports:
             - containerPort: 8080
@@ -66,18 +70,22 @@ spec:
           command: ["/bin/sh", "-c"]
           args: ["until mongosh \"mongodb://{{ .Values.mongodb.username }}:{{ .Values.mongodb.password }}@{{ .Values.mongodb.service }}:27017/backend?authSource=admin\" --eval \"db.stats()\" > /dev/null 2>&1; do echo Waiting for MongoDB database; sleep 60; done"]
 
-        # Check that MongoDB is running
+        # Check that Redis is running
         - name: assert-redis
           image: redis:7.0.11-alpine
           command: ["/bin/sh", "-c"]
           args: ["until echo PING | redis-cli -h redis -p 6379 > /dev/null 2>&1; do echo Waiting for Redis cache; sleep 60; done"]
 
-        # Migrate schema to "{{ .Values.backend.imageVer }}" version
-        - name: flyway
-          image: "harbor.k8s.elab.rs/banka-2/flyway:{{ .Values.backend.imageVer }}"
+        # Wait for migration
+        - name: assert-migrated
+          image: mysql
           env:
-            - name: url
-              value: jdbc:mysql://relational:3306/backend?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
+            - name: host
+              value: relational
+            - name: port
+              value: "3306"
+            - name: database
+              value: backend
             - name: user
               valueFrom:
                 secretKeyRef:
@@ -88,10 +96,8 @@ spec:
                 secretKeyRef:
                   name: relational-creds
                   key: password
-            - name: schemas
-              value: backend
-          command: ["/bin/sh", "-c"]
-          args: ["until flyway migrate -url=$url -user=$user -password=$password; do echo Waiting for Flyway migration; sleep 60; done"]
+          command: ["/bin/bash", "-c"]
+          args: ["until mysql -sN -h$host -P$port -D$database -u$user -p$password --execute=\"select * from flyway_schema_history;\"; do echo Waiting on migration; sleep 30; done"]
 
 ---
 
