@@ -41,9 +41,9 @@ spec:
               value: mongodb://{{ .Values.mongodb.username }}:{{ .Values.mongodb.password }}@{{ .Values.mongodb.service }}:27017/backend?authSource=admin
             - name: spring.cache.type
               value: redis
-            - name: spring.data.redis.host
+            - name: spring.redis.host
               value: redis
-            - name: spring.data.redis.port
+            - name: spring.redis.port
               value: "6379"
             - name: cache.host
               value: redis
