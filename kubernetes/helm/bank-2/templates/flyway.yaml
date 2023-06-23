@@ -13,7 +13,7 @@ spec:
       image: "harbor.k8s.elab.rs/banka-2/flyway:{{ .Values.backend.imageVer }}"
       env:
         - name: url
-          value: jdbc:mysql://relational:3306/backend?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
+          value: jdbc:mysql://primary-relational:3306/backend?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
         - name: user
           valueFrom:
             secretKeyRef:
@@ -33,4 +33,4 @@ spec:
     - name: assert-mysql
       image: alpine
       command: ["/bin/sh", "-c"]
-      args: ["apk add --no-cache netcat-openbsd; until nc -z -v relational 3306; do echo Waiting for MySQL database; sleep 60; done"]
+      args: ["apk add --no-cache netcat-openbsd; until nc -z -v primary-relational 3306; do echo Waiting for MySQL database; sleep 60; done"]
