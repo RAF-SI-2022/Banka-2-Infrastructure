@@ -26,7 +26,7 @@ spec:
             - name: server.port
               value: "8080"
             - name: spring.datasource.url
-              value: jdbc:mysql://relational:3306/backend?allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true
+              value: jdbc:mysql://primary-relational:3306/backend?allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true
             - name: spring.datasource.username
               valueFrom:
                 secretKeyRef:
@@ -62,7 +62,7 @@ spec:
         - name: assert-mysql
           image: alpine
           command: ["/bin/sh", "-c"]
-          args: ["apk add --no-cache netcat-openbsd; until nc -z -v relational 3306; do echo Waiting for MySQL database; sleep 60; done"]
+          args: ["apk add --no-cache netcat-openbsd; until nc -z -v primary-relational 3306; do echo Waiting for MySQL database; sleep 60; done"]
 
         # Check that MongoDB is running
         - name: assert-mongo
@@ -81,7 +81,7 @@ spec:
           image: mysql
           env:
             - name: host
-              value: relational
+              value: primary-relational
             - name: port
               value: "3306"
             - name: database
