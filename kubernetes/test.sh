@@ -11,6 +11,22 @@
 chmod +x kubernetes/scripts/vars.sh
 . kubernetes/scripts/vars.sh
 
+# All microservices
+if [[ -z "${SERVICES}" ]]; then
+  echo "SERVICES not declared"
+  exit 1
+fi
+# Externally installed services
+if [[ -z "${EXTRA_SERVICES}" ]]; then
+  echo "EXTRA_SERVICES not declared"
+  exit 1
+fi
+# Services to be tested
+if [[ -z "${TEST_SERVICES}" ]]; then
+  echo "TEST_SERVICES not declared"
+  exit 1
+fi
+
 # Number of attempts
 max_attempts=10
 
@@ -86,7 +102,8 @@ CMD
 )
 
 # Run test on each pod
-for service in $services
+test_services=$(echo $TEST_SERVICES | xargs)
+for service in $test_services
 do
   echo "Testing pod $service"
 
