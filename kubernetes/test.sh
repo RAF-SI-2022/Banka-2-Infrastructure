@@ -47,7 +47,7 @@ do
   do
 
     # Regex of the pod
-    regex="$service-.*"
+    regex="$service.*"
 
     # Fetch the status of the pod
     pod_status=$(kubectl get pods -n ${NAMESPACE} | grep -E "$regex" | awk '{print $3}')
