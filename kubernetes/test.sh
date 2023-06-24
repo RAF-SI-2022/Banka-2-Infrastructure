@@ -53,7 +53,7 @@ do
     pod_status=$(kubectl get pods -n ${NAMESPACE} | grep -E "$regex" | awk '{print $3}')
 
     # Check if the pod is running or (successfully) completed
-    if [ "$pod_status" != "Running" || "$pod_status" != "Completed" ]
+    if [ "$pod_status" != "Running" ] || [ "$pod_status" != "Completed" ]
     then
       all_ready=false
       break
