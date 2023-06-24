@@ -1,0 +1,69 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: users
+  namespace: {{ .Values.namespace }}
+  labels:
+    prometheus: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: users
+  endpoints:
+    - port: http
+      honorLabels: true
+      path: "/actuator/prometheus"
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: main
+  namespace: {{ .Values.namespace }}
+  labels:
+    prometheus: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: main
+  endpoints:
+    - port: http
+      honorLabels: true
+      path: "/actuator/prometheus"
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: otc
+  namespace: {{ .Values.namespace }}
+  labels:
+    prometheus: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: otc
+  endpoints:
+    - port: http
+      honorLabels: true
+      path: "/actuator/prometheus"
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: client
+  namespace: {{ .Values.namespace }}
+  labels:
+    prometheus: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: client
+  endpoints:
+    - port: http
+      honorLabels: true
+      path: "/actuator/prometheus"
