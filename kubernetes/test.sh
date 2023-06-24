@@ -109,12 +109,12 @@ do
   echo "Testing pod $service"
 
   # Regex of the pod
-  regex="$service-.*"
+  regex="$service.*"
 
   # Fetch the status of the pod
   name=$(kubectl get pods -n ${NAMESPACE} | grep -E "$regex" | awk '{print $1}')
 
-  if kubectl exec $name -- /bin/bash -c "$cmd"
+  if kubectl exec $name -- sh -c "$cmd"
   then
     echo "Pod $service passed tests"
   else
