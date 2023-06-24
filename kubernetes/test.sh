@@ -47,14 +47,15 @@ do
   do
 
     # Regex of the pod
-    regex="$service-.*"
+    regex="$service.*"
 
     # Fetch the status of the pod
     pod_status=$(kubectl get pods -n ${NAMESPACE} | grep -E "$regex" | awk '{print $3}')
 
-    # Check if the pod is running
-    if [ "$pod_status" != "Running" ]
+    # Check if the pod is running or (successfully) completed
+    if [ "$pod_status" != "Running" ] && [ "$pod_status" != "Completed" ]
     then
+      echo "Pod ${service} invalid status: ${pod_status}"
       all_ready=false
       break
     fi
@@ -78,9 +79,12 @@ then
   exit 1
 fi
 
+# TODO this requires on having the source code inside at ~
 cmd=$(cat <<-CMD
-  apt-get update -y;
-  apt-get install -y python3 python3-pip;
+  export PYTHONUNBUFFERED=1;
+  apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python;
+  python3 -m ensurepip;
+  pip3 install --no-cache --upgrade pip setuptools;
   cd src/main/resources;
 
   echo \"import os\" >> env_extr.py;
@@ -108,12 +112,12 @@ do
   echo "Testing pod $service"
 
   # Regex of the pod
-  regex="$service-.*"
+  regex="$service.*"
 
   # Fetch the status of the pod
   name=$(kubectl get pods -n ${NAMESPACE} | grep -E "$regex" | awk '{print $1}')
 
-  if kubectl exec $name -- /bin/bash -c "$cmd"
+  if kubectl exec $name -- sh -c "$cmd"
   then
     echo "Pod $service passed tests"
   else
