@@ -55,6 +55,7 @@ do
     # Check if the pod is running or (successfully) completed
     if [ "$pod_status" != "Running" ] || [ "$pod_status" != "Completed" ]
     then
+      echo "Pod ${service} invalid status: ${pod_status}"
       all_ready=false
       break
     fi
