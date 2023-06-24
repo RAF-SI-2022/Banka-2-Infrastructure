@@ -80,8 +80,10 @@ then
 fi
 
 cmd=$(cat <<-CMD
-  apt-get update -y;
-  apt-get install -y python3 python3-pip;
+  export PYTHONUNBUFFERED=1;
+  apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python;
+  python3 -m ensurepip;
+  pip3 install --no-cache --upgrade pip setuptools;
   cd src/main/resources;
 
   echo \"import os\" >> env_extr.py;
