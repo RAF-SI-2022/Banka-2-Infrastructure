@@ -36,26 +36,3 @@ spec:
         resources:
           requests:
             storage: 100Gi
-
----
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: prometheus
-  namespace: {{ .Values.namespace }}
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: prometheus-banka-2
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: prometheus
-subjects:
-  - kind: ServiceAccount
-    name: prometheus
-    namespace: {{ .Values.namespace }}
